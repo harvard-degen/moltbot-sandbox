@@ -1,7 +1,14 @@
 # Copy this to .dev.vars and fill in your values
 # .dev.vars is gitignored and used by wrangler dev
 
-ANTHROPIC_API_KEY=sk-ant-...
+# AI Provider - choose ONE of the following:
+# Option A: Anthropic (Claude)
+# ANTHROPIC_API_KEY=sk-ant-...
+
+# Option B: OpenAI-compatible provider (Kimi K2.5, Ollama, etc.)
+# Set OPENAI_API_KEY and AI_GATEWAY_BASE_URL ending in /openai
+# OPENAI_API_KEY=sk-...
+# AI_GATEWAY_BASE_URL=https://api.moonshot.ai/v1/openai
 
 # Local development mode - skips Cloudflare Access auth and bypasses device pairing
 # DEV_MODE=true

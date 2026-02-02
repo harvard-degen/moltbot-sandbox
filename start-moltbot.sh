@@ -217,25 +217,27 @@ const isOpenAI = baseUrl.endsWith('/openai');
 
 if (isOpenAI) {
     // Create custom openai provider config with baseUrl override
-    // Omit apiKey so moltbot falls back to OPENAI_API_KEY env var
-    console.log('Configuring OpenAI provider with base URL:', baseUrl);
+    // Strip /openai suffix to get the actual API endpoint
+    const openaiBaseUrl = baseUrl.replace(/\/openai$/, '');
+    console.log('Configuring OpenAI provider with base URL:', openaiBaseUrl);
     config.models = config.models || {};
     config.models.providers = config.models.providers || {};
-    config.models.providers.openai = {
-        baseUrl: baseUrl,
-        api: 'openai-responses',
+    const openaiProviderConfig = {
+        baseUrl: openaiBaseUrl,
+        api: 'openai-completions',
         models: [
-            { id: 'gpt-5.2', name: 'GPT-5.2', contextWindow: 200000 },
-            { id: 'gpt-5', name: 'GPT-5', contextWindow: 200000 },
-            { id: 'gpt-4.5-preview', name: 'GPT-4.5 Preview', contextWindow: 128000 },
+            { id: 'kimi-k2.5', name: 'Kimi K2.5', contextWindow: 262144 },
         ]
     };
+    // Include API key in provider config (required when using custom baseUrl)
+    if (process.env.OPENAI_API_KEY) {
+        openaiProviderConfig.apiKey = process.env.OPENAI_API_KEY;
+    }
+    config.models.providers.openai = openaiProviderConfig;
     // Add models to the allowlist so they appear in /models
     config.agents.defaults.models = config.agents.defaults.models || {};
-    config.agents.defaults.models['openai/gpt-5.2'] = { alias: 'GPT-5.2' };
-    config.agents.defaults.models['openai/gpt-5'] = { alias: 'GPT-5' };
-    config.agents.defaults.models['openai/gpt-4.5-preview'] = { alias: 'GPT-4.5' };
-    config.agents.defaults.model.primary = 'openai/gpt-5.2';
+    config.agents.defaults.models['openai/kimi-k2.5'] = { alias: 'Kimi K2.5' };
+    config.agents.defaults.model.primary = 'openai/kimi-k2.5';
 } else if (baseUrl) {
     console.log('Configuring Anthropic provider with base URL:', baseUrl);
     config.models = config.models || {};
